@@ -11,8 +11,7 @@ OVERVIEW
 --------
 
 `OANDAPY <https://github.com/gustavooferreira/oandapy>`_ is a python3 wrapper for Oanda's REST API v20.
-This library currently implements the features released under `version 3.0.1 <http://developer.oanda.com/rest-live-v20/release-notes/>`_
- of OANDA's REST API.
+This library currently implements the features released under `version 3.0.1 <http://developer.oanda.com/rest-live-v20/release-notes/>`_ of OANDA's REST API.
 
 Head over to `OANDA's REST API v20 docs <http://developer.oanda.com/rest-live-v20/introduction>`_ to go through their documentation.
 
