@@ -3,13 +3,9 @@
 
 """Oanda API Library"""
 
-from oandapy.api.oanda_base import Core
-from oandapy.api.account import Account
-from oandapy.api.orders import Orders
-from oandapy.api.positions import Positions
-from oandapy.api.pricing import Pricing
-from oandapy.api.trades import Trades
-from oandapy.api.transactions import Transactions
+from .api import (
+    Core, Account, Instrument, Orders, Positions, Pricing, Trades, Transactions
+)
 
 
 class APIv20(Core):
@@ -18,6 +14,7 @@ class APIv20(Core):
     This class instanciates all endpoint classes
 
     """
+    VERSION = 'v3'
 
     def __init__(self, environment="practice", access_token=None):
         """APIv20 object to communicate with Oanda REST API.
@@ -28,8 +25,7 @@ class APIv20(Core):
             access_token (str): Specifies the access token.
 
         """
-        super(APIv20, self).__init__(environment, access_token)
-        self._version = "v3"
+        super().__init__(environment, access_token)
 
         self.account = Account(self)
         self.orders = Orders(self)
@@ -37,3 +33,4 @@ class APIv20(Core):
         self.pricing = Pricing(self)
         self.trades = Trades(self)
         self.transactions = Transactions(self)
+        self.instrument = Instrument(self)
