@@ -41,7 +41,7 @@ Right now, this library has not yet been pushed to pypi, so as of now you can't 
 USAGE
 -----
 
-1. Create a account on `https://www.oanda.com`_ to get a API Access Token.
+1. Create a account on `<https://www.oanda.com>`_ to get a API Access Token.
 2. Import the oandapy module and create an instance with your access token:
 
 .. code-block:: python
