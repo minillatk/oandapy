@@ -86,7 +86,7 @@ NOTES
 
 .. |Travis Build Status| image:: https://travis-ci.org/gustavooferreira/oandapy.svg?branch=master
    :target: https://travis-ci.org/gustavooferreira/oandapy.svg?branch=master
-.. |Coverage Status| image:: https://coveralls.io/repos/github/gustavooferreira/oandapy/badge.svg?branch=master:
+.. |Coverage Status| image:: https://coveralls.io/repos/github/gustavooferreira/oandapy/badge.svg?branch=master
     :target: https://coveralls.io/github/gustavooferreira/oandapy?branch=master
 .. |Code Health| image:: https://landscape.io/github/gustavooferreira/oandapy/master/landscape.svg?style=flat
     :target: https://landscape.io/github/gustavooferreira/oandapy/master
