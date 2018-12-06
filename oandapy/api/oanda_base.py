@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-# vim:fenc=utf-8
-
 """Base module where the Core class is created.
 
 This module consists of a base class that is not meant to be used on its own.
@@ -13,11 +10,14 @@ from oandapy.exceptions import OandaError
 
 
 class Core(object):
-    """Core Abstract Class to be inherited.
-
-    This class is not meant to be called on its own!
-
     """
+    Core Abstract Class to be inherited.
+    """
+    ENVS = {
+        "practice": "https://api-fxpractice.oanda.com",
+        "live": "https://api-fxtrade.oanda.com"
+    }
+    VERSION = 'v3'
 
     def __init__(self, environment, access_token=None):
         """Core Abstract object.
@@ -27,12 +27,9 @@ class Core(object):
             access_token (str): Specifies the access token.
 
         """
-        envs = {"practice": "https://api-fxpractice.oanda.com",
-                "live": "https://api-fxtrade.oanda.com"}
-
-        assert environment in envs, ("Environment '{0}' does not "
-                                     "exist!".format(environment))
-        self._api_url = envs[environment]
+        assert environment in self.ENVS, ("Environment '{0}' does not "
+                                          "exist!".format(environment))
+        self._api_url = self.ENVS[environment]
 
         self._client = requests.Session()
         self._client.headers['Content-Type'] = "application/json"
@@ -43,7 +40,7 @@ class Core(object):
             assert access_token is not None, ("Access token needs to be defined"
                                               " for authorization purpose.")
 
-    def request(self, endpoint, method, params=None):
+    def request(self, endpoint, method='GET', params=None):
         """Requests data from Oanda API.
 
         Args:
@@ -61,7 +58,7 @@ class Core(object):
             OandaError: An error occurred while requesting the Oanda API.
 
         """
-        url = "/".join((self._api_url, self._version, endpoint))
+        url = "/".join((self._api_url, self.VERSION, endpoint))
 
         method = method.lower()
         func = getattr(self._client, method)
@@ -84,3 +81,6 @@ class Core(object):
             raise OandaError(response.status_code, content)
 
         return content
+
+    class Meta:
+        abstract = True
