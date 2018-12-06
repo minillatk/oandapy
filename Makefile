@@ -1,18 +1,37 @@
-# vim:ft=make
-#
-.PHONY: all init test coverage find_todo find_fixme count clean generate_docs
+clean: clean-eggs clean-build
+	@find . -iname '*.pyc' -delete
+	@find . -iname '*.pyo' -delete
+	@find . -iname '*~' -delete
+	@find . -iname '*.swp' -delete
+	@find . -iname '*ropeproject' -delete
+	@find . -iname '__pycache__' -delete
 
-all: test
+clean-eggs:
+	@find . -name '*.egg' -print0|xargs -0 rm -rf --
+	@rm -rf .eggs/
 
-init:
-	pip install -r requirements.txt
+clean-build:
+	@rm -fr build/
+	@rm -fr dist/
+	@rm -fr *.egg-info
 
-test:
-	nosetests
+lint:
+	pre-commit run -av
+
+pip-install:
+	pip install -r requirements-dev.txt
+
+pip-upgrade:
+	pip install --upgrade -r requirements-dev.txt
 
 coverage:
-	# @python3 -m nose --with-coverage --cover-erase --cover-package=oandapy tests.test_oanda || true
 	coverage run --source=oandapy make test
+
+cov-report:
+	py.test -vv --cov-report=html tests
+
+test: pip-install
+	py.test -vv -s
 
 find_todo:
 	@grep --color=always -PnRe "(#|\"|\').*TODO" oandapy || true
@@ -23,12 +42,14 @@ find_fixme:
 count:
 	@find . -type f \( -name "*.py" -o -name "*.rst" \) | xargs wc -l
 
-clean:
-	rm -f .coverage
-	rm -rf oandapy.egg-info
-	find . -type f -name '*.pyc' -delete
-	find . -type d -name '__pycache__' | xargs rm -rf
-	find . -type d -name '*.ropeproject' | xargs rm -rf
+build: test
+	python setup.py sdist
+	python setup.py bdist_wheel
+
+release: build
+	git tag `python setup.py -q version`
+	git push origin `python setup.py -q version`
+	twine upload dist/*
 
 generate_docs:
 	@sphinx-apidoc -f -o doc/oandapy oandapy
