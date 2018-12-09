@@ -76,9 +76,8 @@ setup(
     author_email='gustavojcoferreira@gmail.com',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
-        'Intended Audience :: Education',
         'Intended Audience :: End Users/Desktop',
-        'Intended Audience :: Financial and Insurance Industry'
+        'Intended Audience :: Financial and Insurance Industry',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3.4',
@@ -86,7 +85,7 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python',
-        'Topic :: Software Development :: Libraries :: Python Modules'
+        'Topic :: Office/Business :: Financial :: Investment',
     ],
     cmdclass={'version': VersionCommand},
     description=description,
