@@ -8,9 +8,8 @@ oandapy.api.account module
 --------------------------
 
 .. automodule:: oandapy.api.account
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :no-undoc-members:
+
 
 oandapy.api.instruments module
 ------------------------------
