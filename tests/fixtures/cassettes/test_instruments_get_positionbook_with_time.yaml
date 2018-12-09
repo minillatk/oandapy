@@ -1,0 +1,92 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Authorization: [Bearer 945cb0accbb4c00a392bb35f1a3a4c1b-6ee340da5ac4f204ab27951077ebc43b]
+      Connection: [keep-alive]
+      Content-Type: [application/json]
+      User-Agent: [python-requests/2.20.1]
+    method: GET
+    uri: https://api-fxpractice.oanda.com/v3/instruments/EUR_USD/positionBook?time=2018-11-07T04%3A20%3A00Z
+  response:
+    body:
+      string: !!binary |
+        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
+    headers:
+      Access-Control-Allow-Headers: ['Authorization, Content-Type, Accept-Datetime-Format,
+          OANDA-Agent, ETag']
+      Access-Control-Allow-Methods: ['PUT, PATCH, POST, GET, OPTIONS, DELETE']
+      Access-Control-Allow-Origin: ['*']
+      Access-Control-Expose-Headers: ['ETag, RequestID']
+      Content-Encoding: [gzip]
+      Content-Length: ['3512']
+      Content-Type: [application/json]
+      Date: ['Sun, 09 Dec 2018 10:00:06 GMT']
+      Link: ['</v3/instruments/EUR_USD/positionBook?time=2018-11-07T04:00:00Z>; rel="prev",
+          </v3/instruments/EUR_USD/positionBook?time=2018-11-07T04:40:00Z>; rel="next"']
+      RequestID: ['42506268756809551']
+    status: {code: 200, message: OK}
+version: 1
