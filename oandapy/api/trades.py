@@ -1,14 +1,18 @@
-# -*- coding: utf-8 -*-
-# vim:fenc=utf-8
-
 """
 Trades endpoint
 """
+from ..factories import ResponseFactory
+
+API_PARAMS = {
+    'before_id': 'beforeID',
+    'take_profit': 'takeProfit',
+    'stop_loss': 'stopLoss',
+    'trailing_stoploss': 'trailingStopLoss'
+}
 
 
-class Trades(object):
+class Trades:
     """Class holding trades functions
-
     Trades
         Docs: http://developer.oanda.com/rest-live-v20/trades-ep/
     """
@@ -16,141 +20,134 @@ class Trades(object):
     def __init__(self, api):
         self._api = api
 
-    def get_trades(self, account_id, ids, state=None, instrument=None,
-                   count=None, before_id=None):
+    def get_trades(self, account_id, ids, **kwargs):
         """Get a list of all Accounts authorized for the provided token.
         Get a list of Trades for an Account
 
         Args:
-            This function takes no arguments.
-
+            account_id (str): Account Identifier [required]
+            ids (str, list): List of Trade IDs to retrieve.
+        Kwargs:
+            state: The state to filter the requested Trades by. [default=OPEN]
+            instrument (str): The instrument to filter the requested Trades by.
+            count (int): The maximum number of Trades to return. [default=50, maximum=500]
+            before_id (str): The maximum Trade ID to return.
+                            If not provided the most recent Trades in the Account are returned.
         Returns:
-            A dict with all accounts ids and tags.
-
+            OANDAResponseFactory with the list of Trades requested
         Raises:
             OandaError: An error occurred while requesting the OANDA API.
         """
         endpoint = 'accounts/{0}/trades'.format(account_id)
+        if not isinstance(ids, list):
+            ids = [ids]
+        else:
+            ids = "%2C".join(ids)
 
-        params = {}
+        params = {"ids": ids}
+        qs_params = ('state', 'instrument', 'count', 'before_id')
+        for qs in qs_params:
+            if qs not in kwargs:
+                continue
 
-        ids = "%2C".join(ids)
-        params["ids"] = ids
+            param = API_PARAMS.get(qs, qs)
+            # Add the ordered parameters
+            params[param] = kwargs.get(qs)
 
-        if state:
-            params["state"] = state
+        response = self._api.search(endpoint, params=params)
+        return ResponseFactory(response, 'GetTrades')
 
-        if instrument:
-            params["instrument"] = instrument
-
-        if count:
-            params["count"] = count
-
-        if before_id:
-            params["beforeID"] = before_id
-
-        return self._api.request(endpoint, params=params)
-
-    def get_open_trades_list(self, account_id):
-        """Get a list of all Accounts authorized for the provided token.
-        Get the list of open Trades for an Account
-
+    def get_open_trades(self, account_id):
+        """Get the list of open Trades for an Account
         Args:
-            This function takes no arguments.
-
+            account_id (str): Account Identifier [required]
         Returns:
-            A dict with all accounts ids and tags.
-
+            OANDAResponseFactory with the Account’s list of open Trades is provided
         Raises:
             OandaError: An error occurred while requesting the OANDA API.
         """
         endpoint = 'accounts/{0}/openTrades'.format(account_id)
-        return self._api.request(endpoint)
+        response = self._api.search(endpoint)
+        return ResponseFactory(response, 'GetOpenTrades')
 
     def get_trade_details(self, account_id, trade_id):
-        """Get a list of all Accounts authorized for the provided token.
-        Get the details of a specific Trade in an Account
-
+        """Get the details of a specific Trade in an Account
         Args:
-            This function takes no arguments.
-
+            account_id (str): Account Identifier [required]
+            trade_id (str): Specifier for the Trade [required]
         Returns:
-            A dict with all accounts ids and tags.
+            OANDAResponseFactory with the details for the requested Trade is provided
 
         Raises:
             OandaError: An error occurred while requesting the OANDA API.
         """
         endpoint = 'accounts/{0}/trades/{1}'.format(account_id, trade_id)
-        return self._api.request(endpoint)
+        response = self._api.search(endpoint)
+        return ResponseFactory(response, 'GetTradeDetail')
 
     def close_trade(self, account_id, trade_id, units):
-        """Get a list of all Accounts authorized for the provided token.
-        Close (partially or fully) a specific open Trade in an Account
-
+        """Close (partially or fully) a specific open Trade in an Account
         Args:
-            This function takes no arguments.
-
+            account_id (str): Account Identifier [required]
+            trade_id (str): Specifier for the Trade [required]
+            units: Indication of how much of the Trade to close. ALL to close all.
         Returns:
-            A dict with all accounts ids and tags.
-
+            OANDAResponseFactory with the Trade has been closed as requested
         Raises:
             OandaError: An error occurred while requesting the OANDA API.
         """
         endpoint = 'accounts/{0}/trades/{1}/close'.format(account_id, trade_id)
 
-        params = {}
-        params["units"] = units
-
-        return self._api.request(endpoint, "PUT", params=params)
+        data = {"units": units}
+        response = self._api.update(endpoint, data=data)
+        return ResponseFactory(response, 'GetTradeDetail')
 
     def update_client_extensions(self, account_id, trade_id, client_extensions):
-        """Get a list of all Accounts authorized for the provided token.
-        Update the Client Extensions for a Trade
+        """Update the Client Extensions for a Trade.
+        Do not add, update, or delete the Client Extensions
+        if your account is associated with MT4.
 
         Args:
-            This function takes no arguments.
-
+            account_id (str): Account Identifier [required]
+            trade_id (str): Specifier for the Trade [required]
+            client_extensions (dict): The Client Extensions to update the Trade with.
         Returns:
-            A dict with all accounts ids and tags.
-
+            OANDAResponseFactory with the Trade has been closed as requested
         Raises:
             OandaError: An error occurred while requesting the OANDA API.
         """
         endpoint = 'accounts/{0}/trades/{1}/clientExtensions'.format(account_id,
                                                                      trade_id)
+        data = {"clientExtensions": client_extensions}
+        response = self._api.update(endpoint, data=data)
+        return ResponseFactory(response, 'UpdateClientExtensions')
 
-        params = {}
-        params["clientExtensions"] = client_extensions
-
-        return self._api.request(endpoint, "PUT", params=params)
-
-    def update_trade(self, account_id, trade_id, take_profit=None,
-                     stop_loss=None, trailing_stop_loss=None):
-        """Get a list of all Accounts authorized for the provided token.
-        Create, replace and cancel a Trade’s dependent Orders (Take Profit,
-        Stop Loss and Trailing Stop Loss) through the Trade itself
+    def update_trade(self, account_id, trade_id, **kwargs):
+        """Create, replace and cancel a Trade’s dependent Orders
+        (Take Profit, Stop Loss and Trailing Stop Loss) through the Trade itself
 
         Args:
-            This function takes no arguments.
-
+            account_id (str): Account Identifier [required]
+            trade_id (str): Specifier for the Trade [required]
+        Kwargs:
+            take_profit (dict): The specification of the Take Profit to create/modify/cancel
+            stop_loss (dict): The specification of the Stop Loss to create/modify/cancel.
+            trailing_stop_loss (dict): The specification of the Trailing Stop Loss to create/modify/cancel
         Returns:
-            A dict with all accounts ids and tags.
-
+            OANDAResponseFactory with the Trade has been closed as requested
         Raises:
             OandaError: An error occurred while requesting the OANDA API.
         """
-        endpoint = 'accounts/{0}/trades/{1}/orders'.format(account_id,
-                                                           trade_id)
+        endpoint = 'accounts/{0}/trades/{1}/orders'.format(account_id, trade_id)
+        data = {}
+        qs_params = ('take_profit', 'stop_loss', 'trailing_stop_loss')
+        for qs in qs_params:
+            if qs not in kwargs:
+                continue
 
-        params = {}
+            param = API_PARAMS.get(qs, qs)
+            # Add the ordered parameters
+            data[param] = kwargs.get(qs)
 
-        if take_profit:
-            params["takeProfit"] = take_profit
-
-        if stop_loss:
-            params["stopLoss"] = stop_loss
-
-        if trailing_stop_loss:
-            params["trailingStopLoss"] = trailing_stop_loss
-
-        return self._api.request(endpoint, "PUT", params=params)
+        response = self._api.update(endpoint, data=data)
+        return ResponseFactory(response, 'UpdateTrade')

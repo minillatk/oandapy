@@ -1,19 +1,14 @@
-# -*- coding: utf-8 -*-
-# vim:fenc=utf-8
-
-"""Account endpoints"""
-
-from oandapy.containers.account import GetAccountsContainer
+"""
+Account endpoints
+"""
+from ..factories import ResponseFactory
 
 
-class Account(object):
+class Account:
     """Class holding account functions.
-
     Account
         Docs: http://developer.oanda.com/rest-live-v20/account-ep/
-
     """
-
     def __init__(self, api):
         self._api = api
 
@@ -34,10 +29,8 @@ class Account(object):
         """
 
         endpoint = 'accounts'
-        response = self._api.request(endpoint, "GET")
-        obj = GetAccountsContainer()
-        obj.deserialize(response)
-        return obj
+        response = self._api.search(endpoint)
+        return ResponseFactory(response, 'GetAccounts')
 
     def get_account(self, account_id):
         """Get the full details for a single Account that a client has access
@@ -58,9 +51,9 @@ class Account(object):
             OandaError: An error occurred while requesting the Oanda API.
 
         """
-
-        endpoint = 'accounts/{0}'.format(account_id)
-        return self._api.request(endpoint)
+        endpoint = 'accounts/{}'.format(account_id)
+        response = self._api.search(endpoint)
+        return ResponseFactory(response, 'GetAccount')
 
     def get_account_summary(self, account_id):
         """Get a summary for a single Account that a client has access to.
@@ -75,42 +68,38 @@ class Account(object):
             OandaError: An error occurred while requesting the OANDA API.
         """
         endpoint = 'accounts/{0}/summary'.format(account_id)
-        return self._api.request(endpoint)
+        response = self._api.search(endpoint)
+        return ResponseFactory(response, 'GetAccountSummary')
 
     def get_instruments(self, account_id, instruments=None):
         """Get the list of tradeable instruments for the given Account.
-
         Args:
             account_id: A string providing an account ID.
             instruments: An optional list of instruments to query specifically.
-
         Returns:
             A dict with a list of tradeable instruments for the account ID that
             has been provided.
-
         Raises:
             OandaError: An error occurred while requesting the OANDA API.
         """
         endpoint = 'accounts/{0}/instruments'.format(account_id)
         params = {}
 
-        if instruments is not None:
+        if instruments:
             inst = "%2C".join(instruments)
             params["instruments"] = inst
-        return self._api.request(endpoint, params=params)
+        response = self._api.request(endpoint, params=params)
+        return ResponseFactory(response, 'GetAccountInstruments')
 
     def set_account_settings(self, account_id, alias=None, margin_rate=None):
         """Set the client-configurable portions of an Account.
-
         Args:
             account_id: A string providing an account ID.
             alias: An optional string defining the name for the account.
             margin_rate: An optional string defining the margin rate for the
             account.
-
         Returns:
             A dict with operation response.
-
         Raises:
             OandaError: An error occurred while requesting the OANDA API.
         """
@@ -122,23 +111,21 @@ class Account(object):
         if margin_rate:
             params["marginRate"] = margin_rate
 
-        return self._api.request(endpoint, "PATCH", params=params)
+        response = self._api.request(endpoint, "PATCH", params=params)
+        return ResponseFactory(response, 'GetAccountSettings')
 
     def get_account_changes(self, account_id, since_transaction_id):
         """Endpoint used to poll an Account for its current state and changes
         since a specified TransactionID.
-
         Args:
             account_id: A string providing an account ID.
             since_transaction_id: A string providing an account ID.
-
         Returns:
             A dict with the account state and changes.
-
         Raises:
             OandaError: An error occurred while requesting the OANDA API.
         """
         endpoint = 'accounts/{0}/changes'.format(account_id)
-        params = {}
-        params["sinceTransactionID"] = since_transaction_id
-        return self._api.request(endpoint, params=params)
+        params = {"sinceTransactionID": since_transaction_id}
+        response = self._api.search(endpoint, params=params)
+        return ResponseFactory(response, 'GetAccountChanges')

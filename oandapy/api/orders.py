@@ -1,14 +1,11 @@
-# -*- coding: utf-8 -*-
-# vim:fenc=utf-8
-
 """
 Orders endpoint
 """
+from ..factories import ResponseFactory
 
 
-class Orders(object):
+class Orders:
     """Class holding orders functions
-
     Orders
         Docs: http://developer.oanda.com/rest-live-v20/orders-ep/
     """
@@ -21,41 +18,34 @@ class Orders(object):
         Create an order for an Account
 
         Args:
-            This function takes no arguments.
+            account_id str: Account Identifier [required]
+            order dict: Order specification to create a order
 
         Returns:
-            A dict with all accounts ids and tags.
+            OANDAFactoryResponse: A object with instrument information.OANDAResponseFactory with order data.
 
         Raises:
             OandaError: An error occurred while requesting the OANDA API.
         """
         endpoint = 'accounts/{0}/orders'.format(account_id)
-        params = {}
-        if order:
-            params["order"] = order
-
-        return self._api.request(endpoint, "POST", params=params)
+        data = {'order': order}
+        response = self._api.create(endpoint, data=data)
+        return ResponseFactory(response, 'CreateOrderResponse')
 
     def get_orders_list(self, account_id, ids, state=None, instrument=None,
                         count=None, before_id=None):
         """Get a list of all Accounts authorized for the provided token.
         Get a list of Orders for an Account
-
         Args:
             This function takes no arguments.
-
         Returns:
-            A dict with all accounts ids and tags.
-
+            OANDAFactoryResponse: A object with instrument information.OANDAResponseFactory with order data.
         Raises:
             OandaError: An error occurred while requesting the OANDA API.
         """
         endpoint = 'accounts/{0}/orders'.format(account_id)
-
-        params = {}
-
         ids = "%2C".join(ids)
-        params["ids"] = ids
+        params = {"ids": ids}
 
         if state:
             params["state"] = state
@@ -69,96 +59,82 @@ class Orders(object):
         if before_id:
             params["beforeID"] = before_id
 
-        return self._api.request(endpoint, params=params)
+        response = self._api.search(endpoint, params=params)
+        return ResponseFactory(response, 'GetOrdersList')
 
     def get_pending_orders(self, account_id):
         """Get a list of all Accounts authorized for the provided token.
         List all pending Orders in an Account
-
         Args:
             This function takes no arguments.
-
         Returns:
-            A dict with all accounts ids and tags.
-
+            OANDAFactoryResponse: A object with instrument information.OANDAResponseFactory with order data.
         Raises:
             OandaError: An error occurred while requesting the OANDA API.
         """
         endpoint = 'accounts/{0}/pendingOrders'.format(account_id)
-        return self._api.request(endpoint)
+        response = self._api.search(endpoint)
+        return ResponseFactory(response, 'GetPendingOrders')
 
     def get_order_details(self, account_id, order_id):
         """Get a list of all Accounts authorized for the provided token.
         Get details for a single Order in an Account
-
         Args:
             This function takes no arguments.
-
         Returns:
-            A dict with all accounts ids and tags.
-
+            OANDAResponseFactory with order data.
         Raises:
             OandaError: An error occurred while requesting the OANDA API.
         """
         endpoint = 'accounts/{0}/orders/{1}'.format(account_id, order_id)
-        return self._api.request(endpoint)
+        response = self._api.search(endpoint)
+        return ResponseFactory(response, 'GetOrderDetail')
 
     def replace_order(self, account_id, order_id, order):
         """Get a list of all Accounts authorized for the provided token.
         Replace an Order in an Account by simultaneously cancelling it and
         creating a replacement Order
-
         Args:
             This function takes no arguments.
-
         Returns:
-            A dict with all accounts ids and tags.
-
+            OANDAResponseFactory with order data.
         Raises:
             OandaError: An error occurred while requesting the OANDA API.
         """
         endpoint = 'accounts/{0}/orders/{1}'.format(account_id, order_id)
-
-        params = {}
-        params["order"] = order
-
-        return self._api.request(endpoint, "PUT", params=params)
+        data = {'order': order}
+        response = self._api.update(endpoint, data=data)
+        return ResponseFactory(response, 'ReplaceOrder')
 
     def cancel_pending_order(self, account_id, order_id):
         """Get a list of all Accounts authorized for the provided token.
         Cancel a pending Order in an Account
-
         Args:
             This function takes no arguments.
-
         Returns:
-            A dict with all accounts ids and tags.
-
+            OANDAResponseFactory with order data.
         Raises:
             OandaError: An error occurred while requesting the OANDA API.
         """
-        endpoint = 'accounts/{0}/orders/{1}/cancel'.format(account_id, order_id)
-        return self._api.request(endpoint, "PUT")
+        endpoint = 'accounts/{}/orders/{}/cancel'.format(account_id, order_id)
+        response = self._api.update(endpoint, data={})
+        return ResponseFactory(response, 'GetCancelPendingOrder')
 
-    def update_client_extensions(self, account_id, order_id, client_extensions,
-                                 trade_client_extensions):
-        """Get a list of all Accounts authorized for the provided token.
-        Update the Client Extensions for an Order in an Account
-
+    def update_client_extensions(self, account_id, order_id, comment):
+        """Update the Client Extensions for an Order in an Account.
+        Do not set, modify, or delete clientExtensions if your account is associated with MT4.
         Args:
             This function takes no arguments.
-
         Returns:
-            A dict with all accounts ids and tags.
-
+            OANDAResponseFactory with order data.
         Raises:
             OandaError: An error occurred while requesting the OANDA API.
         """
-        endpoint = 'accounts/{0}/orders/{1}/clientExtensions'.format(account_id,
-                                                                     order_id)
-
-        params = {}
-        params["clientExtensions"] = client_extensions
-        params["tradeClientExtensions"] = trade_client_extensions
-
-        return self._api.request(endpoint, "PUT", params=params)
+        endpoint = 'accounts/{}/orders/{}/clientExtensions'.format(account_id, order_id)
+        data = {
+            "clientExtensions": {
+                "comment": comment
+            }
+        }
+        response = self._api.update(endpoint, data=data)
+        return ResponseFactory(response, 'UpdateOrderClientExtensions')

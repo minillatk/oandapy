@@ -9,9 +9,8 @@ API_DATE_ARGS = {
 }
 
 
-class Instrument(object):
+class Instrument:
     """Class holding instruments functions
-
     Instrument
         Docs: http://developer.oanda.com/rest-live-v20/instrument-ep/
     """

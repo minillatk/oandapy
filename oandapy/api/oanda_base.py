@@ -17,10 +17,9 @@ class RequestsTransport:
         return method(endpoint, **kwargs)
 
 
-class Core(object):
+class Core:
     """
     Core Abstract object.
-
     Attributes:
         url_bases: URLs from OANDA environments
         api_version: OANDA's API Version
@@ -29,8 +28,9 @@ class Core(object):
         transport: Transport class to able to use Requests or AioHTTP(AsyncIO)
     """
     url_bases = {
-        "practice": "https://api-fxpractice.oanda.com",
-        "live": "https://api-fxtrade.oanda.com"
+        'live': 'https://api-fxtrade.oanda.com',
+        'practice': 'https://api-fxpractice.oanda.com',
+        'stream': 'https://stream-fxtrade.oanda.com'
     }
     api_version = 'v3'
 
@@ -62,11 +62,12 @@ class Core(object):
             'Content-Type': 'application/json'
         }
 
-    def make_request(self, method_name, endpoint, **kwargs):
+    def make_request(self, method_name, endpoint, stream=False, **kwargs):
         """Requests data from Oanda API.
         Args:
             endpoint (str): URL for Oanda API endpoint.
             method_name (str): Specifies the method to be used on the request.
+            stream (str): Set request as Streamer URL
         Optional:
             params (dict, optional): Specifies parameters to be sent with the
             request.
@@ -74,10 +75,14 @@ class Core(object):
         Returns:
             response: Requests response object.
         """
-        full_url = "/".join((self.base_url, endpoint))
+        base_url = self.base_url
+        if stream:
+            base_url = self._get_base_url('stream')
+
+        full_url = "/".join((base_url, endpoint))
         try:
             response = self.transport.make_request(
-                method_name, full_url, timeout=self.timeout, **kwargs
+                method_name, full_url, timeout=self.timeout, stream=stream, **kwargs
             )
         except (Timeout, ReadTimeout, RequestsConnectionError) as exc:
             raise ServerError() from exc
@@ -117,11 +122,12 @@ class Core(object):
         response = self.make_request(method, endpoint, data=json.dumps(data))
         return response.json()
 
-    def search(self, endpoint, **kwargs):
+    def search(self, endpoint, stream=False, **kwargs):
         """Do a GET to make a search without need
            to pass all arguments to make a request.
         Args:
             endpoint (str): URL for Oanda API endpoint.
+            stream (str): Set request as Streamer URL
         Kwargs(Optional):
             params (dict): Specifies parameters to be sent with the request.
 
@@ -129,7 +135,7 @@ class Core(object):
             dict: Data retrieved for specified endpoint.
         """
         params = kwargs.pop('params', {})
-        response = self.make_request('GET', endpoint, params=params)
+        response = self.make_request('GET', endpoint, params=params, stream=stream)
         return response.json()
 
     class Meta:
