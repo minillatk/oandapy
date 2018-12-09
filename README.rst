@@ -3,7 +3,7 @@ Oanda REST-v20 API wrapper
 
 |PyPI latest| |PyPI Version| |Coverage Status| |Travis Build Status| |Code Health| |PyPI License|
 
-NOTE`: DO NOT USE THIS LIBRARY ON PRODUCTION!
+`NOTE`: DO NOT USE THIS LIBRARY ON PRODUCTION!
 It is under heavy development and still lacks testing suites. It is also partially documented.
 
 
