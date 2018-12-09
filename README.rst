@@ -93,9 +93,9 @@ NOTES
     :target: https://coveralls.io/github/rhenter/oandapy?branch=master
 .. |Code Health| image:: https://landscape.io/github/rhenter/oandapy/master/landscape.svg?style=flat
     :target: https://landscape.io/github/rhenter/oandapy/master
-.. |PyPI Version| image:: https://img.shields.io/pypi/pyversions/oandapy.svg?maxAge=2592000
+.. |PyPI Version| image:: https://img.shields.io/pypi/pyversions/oandapy.svg?maxAge=2000000
    :target: https://pypi.python.org/pypi/oandapy
-.. |PyPI License| image:: https://img.shields.io/pypi/l/oandapy.svg?maxAge=2592000
+.. |PyPI License| image:: https://img.shields.io/pypi/l/oandapy.svg?maxAge=360
    :target: https://github.com/rhenter/oandapy/blob/master/LICENCE
-.. |PyPI latest| image:: https://img.shields.io/pypi/v/oandapy.svg?maxAge=360
+.. |PyPI latest| image:: https://img.shields.io/pypi/v/oandapy.svg?maxAge=180
    :target: https://pypi.python.org/pypi/oandapy
