@@ -1,6 +1,7 @@
 """
-Instrument endpoint
+Instruments endpoint
 """
+from ..factories import ResponseFactory
 
 API_DATE_ARGS = {
     'from_date': 'from',
@@ -29,9 +30,9 @@ class Instrument(object):
                     Can contain any combination of the characters “M” (midpoint candles)
                     “B” (bid candles) and “A” (ask candles). [default=M]
             granularity: The granularity of the candlesticks to fetch [default=S5]
-            count: The number of candlesticks to return in the reponse.
+            count: The number of candlesticks to return in the response.
                   Count should not be specified if both the start and end parameters are
-                  provided, as the time range combined with the graularity will determine
+                  provided, as the time range combined with the granularity will determine
                   the number of candlesticks to return. [default=500, maximum=5000]
             from_date: The start of the time range to fetch candlesticks for.
             to_date: The end of the time range to fetch candlesticks for.
@@ -54,43 +55,39 @@ class Instrument(object):
 
 
         Returns:
-            A dict with instrument information.
+            OANDAFactoryResponse: A object with instrument information.
 
         Raises:
             OandaError: An error occurred while requesting the OANDA API.
         """
         endpoint = 'instruments/{0}/candles'.format(instrument)
-
-        params = {}
-        querystrings_params = (
+        qs_params = (
             'price', 'granularity', 'count', 'to_date', 'from_date',
             'smooth', 'includeFirst', 'dailyAlignment', 'alignmentTimezone',
             'weeklyAlignment',
         )
-        for qs in querystrings_params:
+        params = {}
+        for qs in qs_params:
             if qs not in kwargs:
                 continue
 
-            if qs in API_DATE_ARGS:
-                params[API_DATE_ARGS[qs]] = kwargs.get(qs)
-            else:
-                params[qs] = kwargs.get(qs)
+            # Change the dates params
+            param = API_DATE_ARGS.get(qs, qs)
+            # Add the ordered parameters
+            params[param] = kwargs.get(qs)
 
-        return self._api.request(endpoint, params=params)
+        response = self._api.search(endpoint, params=params)
+        return ResponseFactory(response, 'GetInstrumentCandles')
 
     def get_orderbook(self, instrument, **kwargs):
         """Fetch a OrderBook for an instrument.
-
         Args:
             instrument:	Name of the Instrument [required]
-
         optional:
             time: The time of the snapshot to fetch.
                   If not specified, then the most recent snapshot is fetched.
-
         Returns:
-            A dict with instrument information.
-
+            OANDAFactoryResponse: A object with instrument information.
         Raises:
             OandaError: An error occurred while requesting the OANDA API.
         """
@@ -100,21 +97,18 @@ class Instrument(object):
         if 'time' in kwargs:
             params['time'] = kwargs.get('time')
 
-        return self._api.request(endpoint, params=params)
+        response = self._api.search(endpoint, params=params)
+        return ResponseFactory(response, 'GetInstrumentOrderBook')
 
     def get_positionbook(self, instrument, **kwargs):
         """Fetch a position book for an instrument.
-
         Args:
             instrument:	Name of the Instrument [required]
-
         optional:
             time: The time of the snapshot to fetch.
                   If not specified, then the most recent snapshot is fetched.
-
         Returns:
-            A dict with instrument information.
-
+            OANDAFactoryResponse: A object with instrument information.
         Raises:
             OandaError: An error occurred while requesting the OANDA API.
         """
@@ -124,4 +118,5 @@ class Instrument(object):
         if 'time' in kwargs:
             params['time'] = kwargs.get('time')
 
-        return self._api.request(endpoint, params=params)
+        response = self._api.search(endpoint, params=params)
+        return ResponseFactory(response, 'GetInstrumentPositionbook')
