@@ -15,9 +15,6 @@ Contents:
   tutorial
   oandapy/modules
   oandapy/oandapy.api
-  oandapy/oandapy.containers
-  oandapy/oandapy.entities
-  oandapy/oandapy.enums
   oandapy/oandapy.exceptions
   oandapy/oandapy
 

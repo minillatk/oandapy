@@ -12,8 +12,16 @@ oandapy.api.account module
     :undoc-members:
     :show-inheritance:
 
-oandapy.api.oanda_base module
------------------------------
+oandapy.api.instruments module
+------------------------------
+
+.. automodule:: oandapy.api.instruments
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oandapy.api.oanda\_base module
+------------------------------
 
 .. automodule:: oandapy.api.oanda_base
     :members:

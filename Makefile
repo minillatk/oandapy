@@ -52,4 +52,4 @@ release: build
 	twine upload dist/*
 
 generate_docs:
-	@sphinx-apidoc -f -o doc/oandapy oandapy
+	@sphinx-apidoc -f -o docs/oandapy oandapy
