@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-# vim:fenc=utf-8
-
 """Oanda API Library"""
 
 from .api import (
@@ -11,12 +8,10 @@ from .api import (
 class APIv20(Core):
     """Oanda REST API v20 Class
 
-    This class instanciates all endpoint classes
+    This class instantiates all endpoint classes
 
     """
-    VERSION = 'v3'
-
-    def __init__(self, environment="practice", access_token=None):
+    def __init__(self, environment="practice", access_token=None, timeout=3):
         """APIv20 object to communicate with Oanda REST API.
 
         Args:
@@ -25,7 +20,7 @@ class APIv20(Core):
             access_token (str): Specifies the access token.
 
         """
-        super().__init__(environment, access_token)
+        super().__init__(environment, access_token, timeout)
 
         self.account = Account(self)
         self.orders = Orders(self)
