@@ -1,86 +1,136 @@
-"""Base module where the Core class is created.
-
-This module consists of a base class that is not meant to be used on its own.
-
-"""
-
 import json
+
 import requests
-from oandapy.exceptions import OandaError
+from requests.exceptions import Timeout, ReadTimeout, ConnectionError as RequestsConnectionError
+
+from ..exceptions import EnvironmentNotFound, ServerError
+from ..validators import validate_status_code
+
+
+class RequestsTransport:
+    def __init__(self, headers):
+        self.session = requests.Session()
+        self.session.headers.update(headers)
+
+    def make_request(self, method_name, endpoint, **kwargs):
+        method = getattr(self.session, method_name.lower())
+        return method(endpoint, **kwargs)
 
 
 class Core(object):
     """
-    Core Abstract Class to be inherited.
+    Core Abstract object.
+
+    Attributes:
+        url_bases: URLs from OANDA environments
+        api_version: OANDA's API Version
+        timeout: Request timeout
+        token: OANDA's API Access token
+        transport: Transport class to able to use Requests or AioHTTP(AsyncIO)
     """
-    ENVS = {
+    url_bases = {
         "practice": "https://api-fxpractice.oanda.com",
         "live": "https://api-fxtrade.oanda.com"
     }
-    VERSION = 'v3'
+    api_version = 'v3'
 
-    def __init__(self, environment, access_token=None):
-        """Core Abstract object.
-
+    def __init__(self, environment, access_token, timeout=3, **kwargs):
+        """
         Args:
             environment (str): Provides the environment for OANDA's API.
             access_token (str): Specifies the access token.
-
+            timeout (int): Set the request timeout. Default is 3
         """
-        assert environment in self.ENVS, ("Environment '{0}' does not "
-                                          "exist!".format(environment))
-        self._api_url = self.ENVS[environment]
+        self.base_url = self._get_base_url(environment)
+        self.timeout = timeout
+        self.token = access_token
+        self.transport = RequestsTransport(headers=self.get_default_headers())
 
-        self._client = requests.Session()
-        self._client.headers['Content-Type'] = "application/json"
+    def _get_base_url(self, environment):
+        url_base = self.url_bases.get(environment)
+        if not url_base:
+            raise EnvironmentNotFound("Environment '{0}' does not exist!".format(environment))
+        return "/".join((url_base, self.api_version))
 
-        if access_token:
-            self._client.headers['Authorization'] = 'Bearer ' + access_token
-        else:
-            assert access_token is not None, ("Access token needs to be defined"
-                                              " for authorization purpose.")
+    def get_default_headers(self):
+        """Get the required headers to access the API
+        Returns:
+             dict: Authorization and Content Type
+        """
+        return {
+            'Authorization': 'Bearer {}'.format(self.token),
+            'Content-Type': 'application/json'
+        }
 
-    def request(self, endpoint, method='GET', params=None):
+    def make_request(self, method_name, endpoint, **kwargs):
         """Requests data from Oanda API.
-
         Args:
             endpoint (str): URL for Oanda API endpoint.
-            method (str): Specifies the method to be used on the request.
+            method_name (str): Specifies the method to be used on the request.
+        Optional:
             params (dict, optional): Specifies parameters to be sent with the
-                request. Defaults to None.
+            request.
+
+        Returns:
+            response: Requests response object.
+        """
+        full_url = "/".join((self.base_url, endpoint))
+        try:
+            response = self.transport.make_request(
+                method_name, full_url, timeout=self.timeout, **kwargs
+            )
+        except (Timeout, ReadTimeout, RequestsConnectionError) as exc:
+            raise ServerError() from exc
+
+        is_valid, exception_class = validate_status_code(
+            response.status_code, response.json()
+        )
+        if not is_valid:
+            raise exception_class
+
+        return response
+
+    def create(self, endpoint, data):
+        """Do a POST without need to pass all arguments to make a request
+        Args:
+            endpoint (str): URL for Oanda API endpoint.
+            data (dict, list of tuples): Data to send in the body of the request.
 
         Returns:
             dict: Data retrieved for specified endpoint.
-
-        Raises:
-            RequestException: An error thrown by Requests library.
-            ValueError: An error thrown by json parser, if JSON decoding fails.
-            OandaError: An error occurred while requesting the Oanda API.
-
         """
-        url = "/".join((self._api_url, self.VERSION, endpoint))
+        response = self.make_request('POST', endpoint, data=json.dumps(data))
+        return response.json()
 
-        method = method.lower()
-        func = getattr(self._client, method)
+    def update(self, endpoint, data, partial=False):
+        """Do a update (PUT/PATCH) without need to pass all arguments to make a request
+        Args:
+            endpoint (str): URL for Oanda API endpoint.
+            data (dict, list of tuples): Data to send in the body of the request.
+            partial (bool): To specify whether the update will change everything
+                            or just a few attributes. Default is False
 
-        params = params or {}
+        Returns:
+            dict: Data retrieved for specified endpoint.
+        """
+        method = 'PATCH' if partial else 'PUT'
+        response = self.make_request(method, endpoint, data=json.dumps(data))
+        return response.json()
 
-        request_args = {}
-        if method == 'get':
-            request_args['params'] = params
-        else:
-            request_args['data'] = json.dumps(params)
+    def search(self, endpoint, **kwargs):
+        """Do a GET to make a search without need
+           to pass all arguments to make a request.
+        Args:
+            endpoint (str): URL for Oanda API endpoint.
+        Kwargs(Optional):
+            params (dict): Specifies parameters to be sent with the request.
 
-        # This function might throw a RequestException
-        response = func(url, **request_args)
-
-        # This function might throw a ValueError Exception
-        content = response.json()
-
-        if response.status_code >= 400:
-            raise OandaError(response.status_code, content)
-
-        return content
+        Returns:
+            dict: Data retrieved for specified endpoint.
+        """
+        params = kwargs.pop('params', {})
+        response = self.make_request('GET', endpoint, params=params)
+        return response.json()
 
     class Meta:
         abstract = True
