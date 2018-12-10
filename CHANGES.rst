@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+0.0.3
+-----
+
+* Add Travis and Coveralls support
+* Remove Enum feature
+
 0.0.2
 -----
 
