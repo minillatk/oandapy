@@ -17,7 +17,7 @@ def fake_client():
     access_token = 'fake-token'
 
     class FakeClient(Core):
-        url_bases = {
+        base_urls = {
             "practice": "http://example.com",
         }
 

@@ -1,7 +1,6 @@
 """
 Pricing endpoint
 """
-from ..factories import ResponseFactory
 
 
 class Pricing:
@@ -47,8 +46,7 @@ class Pricing:
             # Add the ordered parameters
             params[qs] = kwargs.get(qs)
 
-        response = self._api.search(endpoint, params=params)
-        return ResponseFactory(response, 'GetPricing')
+        return self._api.search(endpoint, params=params)
 
     def get_pricing_stream(self, account_id, instruments, **kwargs):
         """Get a stream of Account Prices starting from when the request is made.

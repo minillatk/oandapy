@@ -1,7 +1,6 @@
 """
 Orders endpoint
 """
-from ..factories import ResponseFactory
 
 
 class Orders:
@@ -29,8 +28,7 @@ class Orders:
         """
         endpoint = 'accounts/{0}/orders'.format(account_id)
         data = {'order': order}
-        response = self._api.create(endpoint, data=data)
-        return ResponseFactory(response, 'CreateOrderResponse')
+        return self._api.create(endpoint, data=data)
 
     def get_orders_list(self, account_id, ids, state=None, instrument=None,
                         count=None, before_id=None):
@@ -59,8 +57,7 @@ class Orders:
         if before_id:
             params["beforeID"] = before_id
 
-        response = self._api.search(endpoint, params=params)
-        return ResponseFactory(response, 'GetOrdersList')
+        return self._api.search(endpoint, params=params)
 
     def get_pending_orders(self, account_id):
         """Get a list of all Accounts authorized for the provided token.
@@ -73,8 +70,7 @@ class Orders:
             OandaError: An error occurred while requesting the OANDA API.
         """
         endpoint = 'accounts/{0}/pendingOrders'.format(account_id)
-        response = self._api.search(endpoint)
-        return ResponseFactory(response, 'GetPendingOrders')
+        return self._api.search(endpoint)
 
     def get_order_details(self, account_id, order_id):
         """Get a list of all Accounts authorized for the provided token.
@@ -87,8 +83,7 @@ class Orders:
             OandaError: An error occurred while requesting the OANDA API.
         """
         endpoint = 'accounts/{0}/orders/{1}'.format(account_id, order_id)
-        response = self._api.search(endpoint)
-        return ResponseFactory(response, 'GetOrderDetail')
+        return self._api.search(endpoint)
 
     def replace_order(self, account_id, order_id, order):
         """Get a list of all Accounts authorized for the provided token.
@@ -103,8 +98,7 @@ class Orders:
         """
         endpoint = 'accounts/{0}/orders/{1}'.format(account_id, order_id)
         data = {'order': order}
-        response = self._api.update(endpoint, data=data)
-        return ResponseFactory(response, 'ReplaceOrder')
+        return self._api.update(endpoint, data=data)
 
     def cancel_pending_order(self, account_id, order_id):
         """Get a list of all Accounts authorized for the provided token.
@@ -117,8 +111,7 @@ class Orders:
             OandaError: An error occurred while requesting the OANDA API.
         """
         endpoint = 'accounts/{}/orders/{}/cancel'.format(account_id, order_id)
-        response = self._api.update(endpoint, data={})
-        return ResponseFactory(response, 'GetCancelPendingOrder')
+        return self._api.update(endpoint, data={})
 
     def update_client_extensions(self, account_id, order_id, comment):
         """Update the Client Extensions for an Order in an Account.
@@ -136,5 +129,4 @@ class Orders:
                 "comment": comment
             }
         }
-        response = self._api.update(endpoint, data=data)
-        return ResponseFactory(response, 'UpdateOrderClientExtensions')
+        return self._api.update(endpoint, data=data)

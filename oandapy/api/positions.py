@@ -1,7 +1,6 @@
 """
 Positions endpoints
 """
-from ..factories import ResponseFactory
 
 
 class Positions:
@@ -24,8 +23,7 @@ class Positions:
             OandaError: An error occurred while requesting the OANDA API.
         """
         endpoint = 'accounts/{0}/positions'.format(account_id)
-        response = self._api.search(endpoint)
-        return ResponseFactory(response, 'GetPositions')
+        return self._api.search(endpoint)
 
     def get_open_positions(self, account_id):
         """Get a List List all open Positions for an Account.
@@ -39,8 +37,7 @@ class Positions:
             OandaError: An error occurred while requesting the OANDA API.
         """
         endpoint = 'accounts/{0}/openPositions'.format(account_id)
-        response = self._api.search(endpoint)
-        return ResponseFactory(response, 'GetOpenPositions')
+        return self._api.search(endpoint)
 
     def get_position_details(self, account_id, instrument):
         """Get Get the details of a single Instrument’s Position in an Account.
@@ -54,8 +51,7 @@ class Positions:
             OandaError: An error occurred while requesting the OANDA API.
         """
         endpoint = 'accounts/{0}/positions/{1}'.format(account_id, instrument)
-        response = self._api.search(endpoint)
-        return ResponseFactory(response, 'GetPositionDetail')
+        return self._api.search(endpoint)
 
     def close_position(self, account_id, instrument, long_units,
                        long_client_extensions, short_units,
@@ -83,5 +79,4 @@ class Positions:
         if long_client_extensions:
             data["longClientExtensions"] = long_client_extensions
 
-        response = self._api.update(endpoint, data=data)
-        return ResponseFactory(response, 'GetClosePosition')
+        return self._api.update(endpoint, data=data)

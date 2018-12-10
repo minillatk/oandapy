@@ -1,8 +1,6 @@
 """
 Instruments endpoint
 """
-from ..factories import ResponseFactory
-
 API_DATE_ARGS = {
     'from_date': 'from',
     'to_date': 'to',
@@ -75,8 +73,7 @@ class Instrument:
             # Add the ordered parameters
             params[param] = kwargs.get(qs)
 
-        response = self._api.search(endpoint, params=params)
-        return ResponseFactory(response, 'GetInstrumentCandles')
+        return self._api.search(endpoint, params=params)
 
     def get_orderbook(self, instrument, **kwargs):
         """Fetch a OrderBook for an instrument.
@@ -96,8 +93,7 @@ class Instrument:
         if 'time' in kwargs:
             params['time'] = kwargs.get('time')
 
-        response = self._api.search(endpoint, params=params)
-        return ResponseFactory(response, 'GetInstrumentOrderBook')
+        return self._api.search(endpoint, params=params)
 
     def get_positionbook(self, instrument, **kwargs):
         """Fetch a position book for an instrument.
@@ -117,5 +113,4 @@ class Instrument:
         if 'time' in kwargs:
             params['time'] = kwargs.get('time')
 
-        response = self._api.search(endpoint, params=params)
-        return ResponseFactory(response, 'GetInstrumentPositionbook')
+        return self._api.search(endpoint, params=params)

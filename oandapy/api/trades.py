@@ -1,8 +1,6 @@
 """
 Trades endpoint
 """
-from ..factories import ResponseFactory
-
 API_PARAMS = {
     'before_id': 'beforeID',
     'take_profit': 'takeProfit',
@@ -20,7 +18,7 @@ class Trades:
     def __init__(self, api):
         self._api = api
 
-    def get_trades(self, account_id, ids, **kwargs):
+    def get_trades(self, account_id, **kwargs):
         """Get a list of all Accounts authorized for the provided token.
         Get a list of Trades for an Account
 
@@ -39,13 +37,8 @@ class Trades:
             OandaError: An error occurred while requesting the OANDA API.
         """
         endpoint = 'accounts/{0}/trades'.format(account_id)
-        if not isinstance(ids, list):
-            ids = [ids]
-        else:
-            ids = "%2C".join(ids)
-
-        params = {"ids": ids}
-        qs_params = ('state', 'instrument', 'count', 'before_id')
+        qs_params = ('ids', 'state', 'instrument', 'count', 'before_id')
+        params = {}
         for qs in qs_params:
             if qs not in kwargs:
                 continue
@@ -54,8 +47,7 @@ class Trades:
             # Add the ordered parameters
             params[param] = kwargs.get(qs)
 
-        response = self._api.search(endpoint, params=params)
-        return ResponseFactory(response, 'GetTrades')
+        return self._api.search(endpoint, params=params)
 
     def get_open_trades(self, account_id):
         """Get the list of open Trades for an Account
@@ -67,8 +59,7 @@ class Trades:
             OandaError: An error occurred while requesting the OANDA API.
         """
         endpoint = 'accounts/{0}/openTrades'.format(account_id)
-        response = self._api.search(endpoint)
-        return ResponseFactory(response, 'GetOpenTrades')
+        return self._api.search(endpoint)
 
     def get_trade_details(self, account_id, trade_id):
         """Get the details of a specific Trade in an Account
@@ -82,8 +73,7 @@ class Trades:
             OandaError: An error occurred while requesting the OANDA API.
         """
         endpoint = 'accounts/{0}/trades/{1}'.format(account_id, trade_id)
-        response = self._api.search(endpoint)
-        return ResponseFactory(response, 'GetTradeDetail')
+        return self._api.search(endpoint)
 
     def close_trade(self, account_id, trade_id, units):
         """Close (partially or fully) a specific open Trade in an Account
@@ -99,8 +89,7 @@ class Trades:
         endpoint = 'accounts/{0}/trades/{1}/close'.format(account_id, trade_id)
 
         data = {"units": units}
-        response = self._api.update(endpoint, data=data)
-        return ResponseFactory(response, 'GetTradeDetail')
+        return self._api.update(endpoint, data=data)
 
     def update_client_extensions(self, account_id, trade_id, client_extensions):
         """Update the Client Extensions for a Trade.
@@ -119,8 +108,7 @@ class Trades:
         endpoint = 'accounts/{0}/trades/{1}/clientExtensions'.format(account_id,
                                                                      trade_id)
         data = {"clientExtensions": client_extensions}
-        response = self._api.update(endpoint, data=data)
-        return ResponseFactory(response, 'UpdateClientExtensions')
+        return self._api.update(endpoint, data=data)
 
     def update_trade(self, account_id, trade_id, **kwargs):
         """Create, replace and cancel a Trade’s dependent Orders
@@ -149,5 +137,4 @@ class Trades:
             # Add the ordered parameters
             data[param] = kwargs.get(qs)
 
-        response = self._api.update(endpoint, data=data)
-        return ResponseFactory(response, 'UpdateTrade')
+        return self._api.update(endpoint, data=data)

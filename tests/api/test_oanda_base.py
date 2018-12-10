@@ -15,7 +15,7 @@ def url_base():
 
 @pytest.fixture
 def endpoint():
-    return 'fake-endpoint'
+    return 'fake/endpoint'
 
 
 def test_get_environment_error(fake_client):

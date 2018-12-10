@@ -1,7 +1,6 @@
 """
 Account endpoints
 """
-from ..factories import ResponseFactory
 
 
 class Account:
@@ -29,8 +28,7 @@ class Account:
         """
 
         endpoint = 'accounts'
-        response = self._api.search(endpoint)
-        return ResponseFactory(response, 'GetAccounts')
+        return self._api.search(endpoint)
 
     def get_account(self, account_id):
         """Get the full details for a single Account that a client has access
@@ -52,8 +50,7 @@ class Account:
 
         """
         endpoint = 'accounts/{}'.format(account_id)
-        response = self._api.search(endpoint)
-        return ResponseFactory(response, 'GetAccount')
+        return self._api.search(endpoint)
 
     def get_account_summary(self, account_id):
         """Get a summary for a single Account that a client has access to.
@@ -68,8 +65,7 @@ class Account:
             OandaError: An error occurred while requesting the OANDA API.
         """
         endpoint = 'accounts/{0}/summary'.format(account_id)
-        response = self._api.search(endpoint)
-        return ResponseFactory(response, 'GetAccountSummary')
+        return self._api.search(endpoint)
 
     def get_instruments(self, account_id, instruments=None):
         """Get the list of tradeable instruments for the given Account.
@@ -88,8 +84,7 @@ class Account:
         if instruments:
             inst = "%2C".join(instruments)
             params["instruments"] = inst
-        response = self._api.request(endpoint, params=params)
-        return ResponseFactory(response, 'GetAccountInstruments')
+        return self._api.request(endpoint, params=params)
 
     def set_account_settings(self, account_id, alias=None, margin_rate=None):
         """Set the client-configurable portions of an Account.
@@ -111,8 +106,7 @@ class Account:
         if margin_rate:
             params["marginRate"] = margin_rate
 
-        response = self._api.request(endpoint, "PATCH", params=params)
-        return ResponseFactory(response, 'GetAccountSettings')
+        return self._api.request(endpoint, "PATCH", params=params)
 
     def get_account_changes(self, account_id, since_transaction_id):
         """Endpoint used to poll an Account for its current state and changes
@@ -127,5 +121,4 @@ class Account:
         """
         endpoint = 'accounts/{0}/changes'.format(account_id)
         params = {"sinceTransactionID": since_transaction_id}
-        response = self._api.search(endpoint, params=params)
-        return ResponseFactory(response, 'GetAccountChanges')
+        return self._api.search(endpoint, params=params)

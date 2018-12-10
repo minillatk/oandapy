@@ -5,6 +5,7 @@ from requests.exceptions import Timeout, ReadTimeout, ConnectionError as Request
 
 from ..exceptions import EnvironmentNotFound, ServerError
 from ..validators import validate_status_code
+from ..factories import ResponseFactory
 
 
 class RequestsTransport:
@@ -27,12 +28,15 @@ class Core:
         token: OANDA's API Access token
         transport: Transport class to able to use Requests or AioHTTP(AsyncIO)
     """
-    url_bases = {
+    api_version = 'v3'
+    base_urls = {
         'live': 'https://api-fxtrade.oanda.com',
         'practice': 'https://api-fxpractice.oanda.com',
-        'stream': 'https://stream-fxtrade.oanda.com'
     }
-    api_version = 'v3'
+    stream_urls = {
+        'live': 'https://stream-fxtrade.oanda.com',
+        'practice': 'https://stream-fxpractice.oanda.com',
+    }
 
     def __init__(self, environment, access_token, timeout=3, **kwargs):
         """
@@ -41,25 +45,38 @@ class Core:
             access_token (str): Specifies the access token.
             timeout (int): Set the request timeout. Default is 3
         """
+        self.environment = environment
         self.base_url = self._get_base_url(environment)
         self.timeout = timeout
         self.token = access_token
         self.transport = RequestsTransport(headers=self.get_default_headers())
 
-    def _get_base_url(self, environment):
-        url_base = self.url_bases.get(environment)
+    def _get_base_url(self, environment, stream=False):
+        """
+        Get URL BASE of OANDA's API
+        Args:
+            environment (str):
+            stream (boll):
+        Returns:
+             URL with oanda's API
+        """
+        url_base = self.base_urls.get(environment)
+        if stream:
+            url_base = self.stream_urls.get(environment)
+
         if not url_base:
             raise EnvironmentNotFound("Environment '{0}' does not exist!".format(environment))
         return "/".join((url_base, self.api_version))
 
-    def get_default_headers(self):
+    def get_default_headers(self, datetime_format="RFC3339"):
         """Get the required headers to access the API
         Returns:
              dict: Authorization and Content Type
         """
         return {
             'Authorization': 'Bearer {}'.format(self.token),
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            "Accept-Datetime-Format": datetime_format
         }
 
     def make_request(self, method_name, endpoint, stream=False, **kwargs):
@@ -75,9 +92,7 @@ class Core:
         Returns:
             response: Requests response object.
         """
-        base_url = self.base_url
-        if stream:
-            base_url = self._get_base_url('stream')
+        base_url = self._get_base_url(self.environment, stream=stream)
 
         full_url = "/".join((base_url, endpoint))
         try:
@@ -105,7 +120,7 @@ class Core:
             dict: Data retrieved for specified endpoint.
         """
         response = self.make_request('POST', endpoint, data=json.dumps(data))
-        return response.json()
+        return ResponseFactory(response, endpoint)
 
     def update(self, endpoint, data, partial=False):
         """Do a update (PUT/PATCH) without need to pass all arguments to make a request
@@ -120,7 +135,7 @@ class Core:
         """
         method = 'PATCH' if partial else 'PUT'
         response = self.make_request(method, endpoint, data=json.dumps(data))
-        return response.json()
+        return ResponseFactory(response, endpoint)
 
     def search(self, endpoint, stream=False, **kwargs):
         """Do a GET to make a search without need
@@ -135,8 +150,8 @@ class Core:
             dict: Data retrieved for specified endpoint.
         """
         params = kwargs.pop('params', {})
-        response = self.make_request('GET', endpoint, params=params, stream=stream)
-        return response.json()
+        response = self.make_request('GET', endpoint, stream=stream, params=params)
+        return ResponseFactory(response, endpoint)
 
     class Meta:
         abstract = True

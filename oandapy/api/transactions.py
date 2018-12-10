@@ -1,9 +1,6 @@
 """
 Transactions endpoint
 """
-from ..factories import ResponseFactory
-
-
 API_PARAMS = {
     'from_date': 'from',
     'to_date': 'to',
@@ -59,8 +56,7 @@ class Transactions:
             # Add the ordered parameters
             params[param] = kwargs.get(qs)
 
-        response = self._api.search(endpoint, params=params)
-        return ResponseFactory(response, 'GetTransactions')
+        return self._api.search(endpoint, params=params)
 
     def get_transaction_details(self, account_id, transaction_id):
         """Get the details of a single Account Transaction.
@@ -75,8 +71,7 @@ class Transactions:
         endpoint = 'accounts/{0}/transactions{1}'.format(account_id,
                                                          transaction_id)
 
-        response = self._api.search(endpoint)
-        return ResponseFactory(response, 'GetTransactionDetail')
+        return self._api.search(endpoint)
 
     def get_transaction_idrange(self, account_id, **kwargs):
         """Get a range of Transactions for an Account based on the Transaction IDs.
@@ -114,8 +109,7 @@ class Transactions:
             # Add the ordered parameters
             params[param] = kwargs.get(qs)
 
-        response = self._api.search(endpoint, params=params)
-        return ResponseFactory(response, 'GetTransactionIdRange')
+        return self._api.search(endpoint, params=params)
 
     def get_transaction_sinceid(self, account_id, last_transaction_id):
         """Get a range of Transactions for an Account starting at (but not
@@ -133,8 +127,7 @@ class Transactions:
         endpoint = 'accounts/{0}/transactions/sinceid'.format(account_id)
 
         params = {"id": last_transaction_id}
-        response = self._api.search(endpoint, params=params)
-        return ResponseFactory(response, 'GetTransactionSinceId')
+        return self._api.search(endpoint, params=params)
 
     def get_transaction_stream(self, account_id):
         """Get a stream of Transactions for an Account starting from when the request is made.
