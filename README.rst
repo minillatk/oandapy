@@ -88,9 +88,9 @@ NOTES
 .. |Travis Build Status| image:: https://travis-ci.org/rhenter/oandapy.svg?branch=master
    :target: https://travis-ci.org/rhenter/oandapy.svg?branch=master
 .. |Coverage Status| image:: https://coveralls.io/repos/github/rhenter/oandapy/badge.svg?branch=master
-    :target: https://coveralls.io/github/rhenter/oandapy?branch=master
+   :target: https://coveralls.io/github/rhenter/oandapy?branch=master
 .. |Code Health| image:: https://landscape.io/github/rhenter/oandapy/master/landscape.svg?style=flat
-    :target: https://landscape.io/github/rhenter/oandapy/master
+   :target: https://landscape.io/github/rhenter/oandapy/master
 .. |PyPI Version| image:: https://img.shields.io/pypi/pyversions/oandapy.svg?maxAge=2000000
    :target: https://pypi.python.org/pypi/oandapy
 .. |PyPI License| image:: https://img.shields.io/pypi/l/oandapy.svg?maxAge=360
