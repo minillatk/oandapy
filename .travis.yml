@@ -3,7 +3,6 @@ python:
   - 3.4
   - 3.5
   - 3.6
-  - 3.7
 install:
   - pip install -r requirements-dev.txt
   - pip install coveralls
@@ -11,3 +10,6 @@ script:
   pytest -vv -s
 after_success:
   coveralls
+git:
+  submodules: false
+
