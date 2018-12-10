@@ -72,8 +72,8 @@ with codecs.open(os.path.join(here, 'requirements-dev.txt')) as f:
 
 
 setup(
-    author='Gustavo Ferreira',
-    author_email='gustavojcoferreira@gmail.com',
+    author='Rafael Henter, Gustavo Ferreira',
+    author_email='rafael@henter.com.br',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: End Users/Desktop',
