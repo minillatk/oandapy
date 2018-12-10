@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+0.0.5
+-----
+
+* Update Readme file to get simple
+
 0.0.4
 -----
 
