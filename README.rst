@@ -3,9 +3,6 @@ Oanda REST-v20 API wrapper
 
 |PyPI latest| |PyPI Version| |Coverage Status| |Travis Build Status| |Code Health| |PyPI License|
 
-`NOTE`: DO NOT USE THIS LIBRARY ON PRODUCTION!
-It is under heavy development and still lacks testing suites. It is also partially documented.
-
 
 OVERVIEW
 --------
@@ -83,6 +80,7 @@ NOTES
 -----
 
 * Oanda API REST-v20 is still under development, some functionality have not yet been implemented (Pricing History, Forex Labs), but I will keep an eye on it, and as soon as it gets implemented I will update this library accordingly.
+* DO NOT USE THIS LIBRARY ON PRODUCTION! It is under heavy development and still lacks testing suites. It is also partially documented.
 * Use this library at your own risk.
 * Happy hunting on the markets!!
 
