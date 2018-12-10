@@ -46,19 +46,26 @@ USAGE
 
 .. code-block:: python
 
-    from oandapy import APIv20
-    from oandapy.exceptions import OandaError
+    >> from oandapy import APIv20
+    >> from oandapy.exceptions import OandaError
+    >>
+    >> access_token = "<OANDA Access token>"
+    >> oanda = APIv20(environment="practice", access_token=access_token)
 
-    access_token = ""
-    con = APIv20(environment="practice", access_token=access_token)
+    >> try:
+    >>     result = con.account.get_accounts()
+    >> # In case of http status 400
+    >> except OandaError as exc:
+    >>     print(str(exc))
+    >>
+    >> # Use the result as object
+    >> print(result.as_obj())
+    MyModel(accounts=[NamelessModel(tags=[], id='000-000-0000000-000')])
+    >>
+    >> # Use the result as dict
+    >> print(result.as_dict())
+    {'accounts': [{'id': '000-000-0000000-000', 'tags': []}]}
 
-    try:
-      result = con.account.get_accounts().as_obj()
-
-      for acc in result.accounts:
-        print(acc.aid)
-    except oanda.OandaError as exc:
-      print(str(exc))
 
 
 
