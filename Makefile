@@ -46,10 +46,10 @@ build: test
 	python setup.py sdist
 	python setup.py bdist_wheel
 
-release: build
+release: clean build
 	git tag `python setup.py -q version`
 	git push origin `python setup.py -q version`
 	twine upload dist/*
 
 generate_docs:
-	@sphinx-apidoc -f -o docs/oandapy oandapy
+	@sphinx-apidoc -f -o docs/source oandapy

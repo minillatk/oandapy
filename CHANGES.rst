@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+0.0.7
+-----
+
+* Changes to Pypi view
+
 0.0.6
 -----
 
