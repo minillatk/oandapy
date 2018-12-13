@@ -97,6 +97,6 @@ setup(
     packages=find_packages(exclude=['docs', 'tests', 'tests.*', 'requirements']),
     setup_requires=['pytest-runner'],
     tests_require=tests_requirements,
-    url='https://github.com/gustavooferreira/oandapy',
+    url='https://github.com/rhenter/oandapy',
     version=version,
 )

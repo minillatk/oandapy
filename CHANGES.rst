@@ -1,6 +1,17 @@
 Changelog
 ---------
 
+0.0.9
+-----
+
+* Update url on setup.py
+
+0.0.8
+-----
+
+* Update Sphinx doc
+* Update docstrings (its not ok yet)
+
 0.0.7
 -----
 
