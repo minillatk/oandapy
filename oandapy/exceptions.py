@@ -36,4 +36,5 @@ class NotFound(OandaError):
 
 
 class ServerError(OandaError):
+    """ServerError"""
     pass

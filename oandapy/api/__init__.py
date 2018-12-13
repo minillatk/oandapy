@@ -1,4 +1,4 @@
-from .oanda_base import Core  # noqa
+from .base import Core  # noqa
 from .account import Account  # noqa
 from .instruments import Instrument  # noqa
 from .orders import Orders  # noqa

@@ -1,5 +1,3 @@
-"""Oanda API Library"""
-
 from .api import (
     Core, Account, Instrument, Orders, Positions, Pricing, Trades, Transactions
 )
