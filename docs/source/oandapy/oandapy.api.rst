@@ -19,10 +19,10 @@ oandapy.api.instruments module
     :undoc-members:
     :show-inheritance:
 
-oandapy.api.oanda\_base module
+oandapy.api._base module
 ------------------------------
 
-.. automodule:: oandapy.api.oanda_base
+.. automodule:: oandapy.api.base
     :members:
     :undoc-members:
     :show-inheritance:
@@ -63,15 +63,6 @@ oandapy.api.transactions module
 -------------------------------
 
 .. automodule:: oandapy.api.transactions
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: oandapy.api
     :members:
     :undoc-members:
     :show-inheritance:

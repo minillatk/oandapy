@@ -13,9 +13,7 @@ Contents:
 
   intro
   tutorial
-  oandapy/modules
-  oandapy/oandapy.api
-  oandapy/oandapy.exceptions
+
   oandapy/oandapy
 
 This documentations is still under construction!!

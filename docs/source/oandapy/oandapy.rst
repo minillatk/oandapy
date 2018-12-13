@@ -7,42 +7,6 @@ Subpackages
 .. toctree::
 
     oandapy.api
-    oandapy.enums
-
-Submodules
-----------
-
-oandapy.exceptions module
--------------------------
-
-.. automodule:: oandapy.exceptions
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-oandapy.factories module
-------------------------
-
-.. automodule:: oandapy.factories
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-oandapy.oanda module
---------------------
-
-.. automodule:: oandapy.oanda
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-oandapy.validators module
--------------------------
-
-.. automodule:: oandapy.validators
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
 oandapy.version module
 ----------------------
